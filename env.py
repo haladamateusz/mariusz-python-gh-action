@@ -1,5 +1,5 @@
 import os
-URL = 'http://localhost:3000'
+URL = 'https://mariusz-backend.herokuapp.com'
 LOGIN_URL = URL + '/login'
 SEND_EMAIL_URL = URL + '/email'
 SEND_SMS_URL = URL + '/sms'
