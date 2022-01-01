@@ -1,8 +1,6 @@
     name: 'Send Invoice at 12:50 first on day of the month'
     
-    on:
-      schedule:
-        - cron: "50 12 1 * *" #runs at 00:00 UTC everyday
+    on: push
     
     jobs:
       build:
