@@ -1,4 +1,4 @@
-    name: 'Send Invoice at 12:50 first on day of the month'
+    name: 'Send Invoice at 8:15 first on day of the month'
     
     on: 
         schedule:
