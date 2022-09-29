@@ -9,6 +9,7 @@ class InvoiceGenerator:
     SMS_REQUEST = None
     INVOICE_EXISTS_REQUEST = None
     INVOICE_LOG_REQUEST = None
+    BACKBLAZE_UPLOAD_REQUEST = None
     headers = None
 
     def __init__(self):
@@ -31,20 +32,25 @@ class InvoiceGenerator:
 
         self.send_email()
         if not self.EMAIL_REQUEST.ok:
-            print(f'{self.current_date()}| ERROR {str(self.TOKEN_REQUEST.status_code)} sending email fault ')
+            print(f'{self.current_date()}| ERROR {str(self.EMAIL_REQUEST.status_code)} sending email fault ')
             exit(0)
 
         self.send_sms()
         if not self.SMS_REQUEST.ok:
-            print(f'{self.current_date()}| ERROR {str(self.TOKEN_REQUEST.status_code)} sending sms fault ')
+            print(f'{self.current_date()}| ERROR {str(self.SMS_REQUEST.status_code)} sending sms fault ')
 
         self.save_invoice_log()
         if not self.INVOICE_LOG_REQUEST.ok:
-            print(f'{self.current_date()}| ERROR {str(self.TOKEN_REQUEST.status_code)} saving invoice fault')
+            print(f'{self.current_date()}| ERROR {str(self.INVOICE_LOG_REQUEST.status_code)} saving invoice fault')
+
+        self.upload_invoice()
+        if not self.BACKBLAZE_UPLOAD_REQUEST.ok:
+            print(f'{self.current_date()}| ERROR {str(self.BACKBLAZE_UPLOAD_REQUEST.status_code)} saving invoice fault')
 
         if self.SMS_REQUEST.ok: print('SMS OK')
         if self.EMAIL_REQUEST.ok: print('EMAIL OK')
         if self.INVOICE_LOG_REQUEST.ok: print('INVOICELOG OK')
+        if self.BACKBLAZE_UPLOAD_REQUEST.ok: print('BACKBLAZE UPLOAD OK')
 
     def get_token(self):
         self.TOKEN_REQUEST = requests.post(env.LOGIN_URL, env.CREDENTIALS)
@@ -67,6 +73,9 @@ class InvoiceGenerator:
 
     def save_invoice_log(self):
         self.INVOICE_LOG_REQUEST = requests.post(env.SAVE_INVOICE_LOG_URL, headers=self.headers)
+
+    def upload_invoice(self):
+        self.BACKBLAZE_UPLOAD_REQUEST = requests.post(env.BACKBLAZE_UPLOAD_REQUEST, headers=self.headers)
 
     def current_date(self):
         return datetime.today().strftime('%d.%m.%Y %H:%M:%S ')
