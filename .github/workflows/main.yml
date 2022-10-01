@@ -1,6 +1,7 @@
     name: 'Send Invoice at 8:15 first on day of the month'
     
-    on: 
+    on:
+        workflow_dispatch:
         schedule:
         - cron:  '15 8 1 * *'
     
