@@ -9,7 +9,7 @@ BACKBLAZE_UPLOAD_REQUEST = URL + '/invoice-data/upload-invoice'
 CONTRARIAN = 'InPost Paczkomaty Sp. z o.o.'
 
 CREDENTIALS = {
-        "username": os.environ['MARIUSZ_PASSWORD'],
+        "username": os.environ['MARIUSZ_USERNAME'],
         "password": os.environ['MARIUSZ_PASSWORD']
 }
 
