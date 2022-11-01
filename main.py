@@ -16,21 +16,37 @@ class InvoiceGenerator:
         self.run_procedure()
 
     def run_procedure(self):
-        self.get_token()
-        if not self.TOKEN_REQUEST.ok:
-            print(f'{self.current_date()}| ERROR {str(self.TOKEN_REQUEST.status_code)} Authentication fault')
-            exit(0)
+#         self.get_token()
+#         if not self.TOKEN_REQUEST.ok:
+#             print(f'{self.current_date()}| ERROR {str(self.TOKEN_REQUEST.status_code)} Authentication fault')
+#             exit(0)
+            self.TOKEN_REQUEST = requests.post(env.LOGIN_URL, env.CREDENTIALS)
 
-        self.set_headers()
-        self.check_invoice_exists()
-        print(self.TOKEN_REQUEST.json().get('token'))
-        if self.INVOICE_EXISTS_REQUEST.ok and self.invoice_exists():
-            print(f'{self.current_date()}| INVOICE EXISTS, SHUTTING DOWN...')
-            exit(0)
-        if not self.INVOICE_EXISTS_REQUEST.ok:
-            error = self.INVOICE_EXISTS_REQUEST.json()
-            print(f'{self.current_date()}| INVOICELOG REQUEST FAILURE - {str(error["statusCode"])} {str(error["message"])}')
-            exit(0)
+            # outputs token length
+            print(len(self.TOKEN_REQUEST.json().get('token')))
+
+            # outputs token locally. Masks it in github actions
+            print(self.TOKEN_REQUEST.json().get('token'))
+
+            # gets date as MMYYYY, f.e. 102022 stands for October 2022
+            dateNow = datetime.today().strftime('%m%Y')
+
+
+            self.INVOICE_EXISTS_REQUEST = requests.get(env.INVOICE_LOG_URL + f'/102022', headers={"Authorization": f'Bearer {self.TOKEN_REQUEST.json().get("token")}'})
+
+            # prints { statusCode: 401, message: "Unauthorized"}
+            print(self.INVOICE_EXISTS_REQUEST.json())
+
+#         self.set_headers()
+#         self.check_invoice_exists()
+#         print(len(self.TOKEN_REQUEST.json().get('token')))
+#         if self.INVOICE_EXISTS_REQUEST.ok and self.invoice_exists():
+#             print(f'{self.current_date()}| INVOICE EXISTS, SHUTTING DOWN...')
+#             exit(0)
+#         if not self.INVOICE_EXISTS_REQUEST.ok:
+#             error = self.INVOICE_EXISTS_REQUEST.json()
+#             print(f'{self.current_date()}| INVOICELOG REQUEST FAILURE - {str(error["statusCode"])} {str(error["message"])}')
+#             exit(0)
 
 #         self.send_email()
 #         if not self.EMAIL_REQUEST.ok:
@@ -61,7 +77,7 @@ class InvoiceGenerator:
 
     def check_invoice_exists(self):
         dateNow = datetime.today().strftime('%m%Y')
-        self.INVOICE_EXISTS_REQUEST = requests.get(env.SAVE_INVOICE_LOG_URL + f'/{dateNow}', headers=self.headers)
+        self.INVOICE_EXISTS_REQUEST = requests.get(env.INVOICE_LOG_URL + f'/{dateNow}', headers=self.headers)
 
     def invoice_exists(self):
         return bool(self.INVOICE_EXISTS_REQUEST.text)
