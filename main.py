@@ -23,9 +23,7 @@ class InvoiceGenerator:
 
         self.set_headers()
         self.check_invoice_exists()
-        print(self.TOKEN_REQUEST.json())
-        print(self.headers)
-        print(self.INVOICE_EXISTS_REQUEST.json())
+        print(self.TOKEN_REQUEST.json().token)
         if self.INVOICE_EXISTS_REQUEST.ok and self.invoice_exists():
             print(f'{self.current_date()}| INVOICE EXISTS, SHUTTING DOWN...')
             exit(0)
