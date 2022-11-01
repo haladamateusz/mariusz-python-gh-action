@@ -27,29 +27,32 @@ class InvoiceGenerator:
             print(f'{self.current_date()}| INVOICE EXISTS, SHUTTING DOWN...')
             exit(0)
         if not self.INVOICE_EXISTS_REQUEST.ok:
-            print(f'{self.current_date()}| INVOICELOG REQUEST FAILURE...')
+            error = self.INVOICE_EXISTS_REQUEST.json()
+            print(self.headers)
+            print(self.INVOICE_EXISTS_REQUEST.json())
+            print(f'{self.current_date()}| INVOICELOG REQUEST FAILURE - {str(error["statusCode"])} {str(error["message"])}')
             exit(0)
 
-        self.send_email()
-        if not self.EMAIL_REQUEST.ok:
-            print(f'{self.current_date()}| ERROR {str(self.EMAIL_REQUEST.status_code)} sending email fault ')
-            exit(0)
-        if self.EMAIL_REQUEST.ok: print('EMAIL OK')
-
-        self.send_sms()
-        if not self.SMS_REQUEST.ok:
-            print(f'{self.current_date()}| ERROR {str(self.SMS_REQUEST.status_code)} sending sms fault ')
-        if self.SMS_REQUEST.ok: print('SMS OK')
-
-        self.save_invoice_log()
-        if not self.INVOICE_LOG_REQUEST.ok:
-            print(f'{self.current_date()}| ERROR {str(self.INVOICE_LOG_REQUEST.status_code)} saving invoice fault')
-        if self.INVOICE_LOG_REQUEST.ok: print('INVOICELOG OK')
-
-        self.upload_invoice()
-        if not self.BACKBLAZE_UPLOAD_REQUEST.ok:
-             print(f'{self.current_date()}| ERROR {str(self.BACKBLAZE_UPLOAD_REQUEST.status_code)} saving invoice fault')
-        if self.BACKBLAZE_UPLOAD_REQUEST.ok: print('BACKBLAZE UPLOAD OK')
+#         self.send_email()
+#         if not self.EMAIL_REQUEST.ok:
+#             print(f'{self.current_date()}| ERROR {str(self.EMAIL_REQUEST.status_code)} sending email fault ')
+#             exit(0)
+#         if self.EMAIL_REQUEST.ok: print('EMAIL OK')
+#
+#         self.send_sms()
+#         if not self.SMS_REQUEST.ok:
+#             print(f'{self.current_date()}| ERROR {str(self.SMS_REQUEST.status_code)} sending sms fault ')
+#         if self.SMS_REQUEST.ok: print('SMS OK')
+#
+#         self.save_invoice_log()
+#         if not self.INVOICE_LOG_REQUEST.ok:
+#             print(f'{self.current_date()}| ERROR {str(self.INVOICE_LOG_REQUEST.status_code)} saving invoice fault')
+#         if self.INVOICE_LOG_REQUEST.ok: print('INVOICELOG OK')
+#
+#         self.upload_invoice()
+#         if not self.BACKBLAZE_UPLOAD_REQUEST.ok:
+#              print(f'{self.current_date()}| ERROR {str(self.BACKBLAZE_UPLOAD_REQUEST.status_code)} saving invoice fault')
+#         if self.BACKBLAZE_UPLOAD_REQUEST.ok: print('BACKBLAZE UPLOAD OK')
 
     def get_token(self):
         self.TOKEN_REQUEST = requests.post(env.LOGIN_URL, env.CREDENTIALS)
