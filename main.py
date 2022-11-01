@@ -31,8 +31,7 @@ class InvoiceGenerator:
             # gets date as MMYYYY, f.e. 102022 stands for October 2022
             dateNow = datetime.today().strftime('%m%Y')
 
-
-            self.INVOICE_EXISTS_REQUEST = requests.get(env.INVOICE_LOG_URL + f'/102022', headers={"Authorization": f'Bearer {self.TOKEN_REQUEST.json().get("token")}'})
+            self.INVOICE_EXISTS_REQUEST = requests.get(env.SAVE_INVOICE_LOG_URL + f'/102022', headers={"Authorization": f'Bearer {self.TOKEN_REQUEST.json().get("token")}'})
 
             # prints { statusCode: 401, message: "Unauthorized"}
             print(self.INVOICE_EXISTS_REQUEST.json())
@@ -77,7 +76,7 @@ class InvoiceGenerator:
 
     def check_invoice_exists(self):
         dateNow = datetime.today().strftime('%m%Y')
-        self.INVOICE_EXISTS_REQUEST = requests.get(env.INVOICE_LOG_URL + f'/{dateNow}', headers=self.headers)
+        self.INVOICE_EXISTS_REQUEST = requests.get(env.SAVE_INVOICE_LOG_URL + f'/{dateNow}', headers=self.headers)
 
     def invoice_exists(self):
         return bool(self.INVOICE_EXISTS_REQUEST.text)
