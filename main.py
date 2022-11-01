@@ -23,15 +23,25 @@ class InvoiceGenerator:
             self.TOKEN_REQUEST = requests.post(env.LOGIN_URL, env.CREDENTIALS)
 
             # outputs token length
-            print(len(self.TOKEN_REQUEST.json().get('token')))
+            # print(len(self.TOKEN_REQUEST.json().get('token')))
 
             # outputs token locally. Masks it in github actions
-            print(self.TOKEN_REQUEST.json().get('token'))
+            # print(self.TOKEN_REQUEST.json().get('token'))
 
             # gets date as MMYYYY, f.e. 102022 stands for October 2022
             dateNow = datetime.today().strftime('%m%Y')
 
-            self.INVOICE_EXISTS_REQUEST = requests.get(env.SAVE_INVOICE_LOG_URL + f'/102022', headers={"Authorization": f'Bearer {self.TOKEN_REQUEST.json().get("token")}'})
+            url = env.SAVE_INVOICE_LOG_URL + f'/102022'
+            token = self.TOKEN_REQUEST.json().get('token')
+            headers = { 'Authorization': 'Bearer ' + token }
+
+            s = requests.Session()
+            s.headers.update({'Authorization': 'Bearer {}'.format(token)})
+            print('token')
+            print(token)
+            print('headers')
+            print(headers)
+            self.INVOICE_EXISTS_REQUEST = requests.get(url, headers=headers)
 
             # prints { statusCode: 401, message: "Unauthorized"}
             print(self.INVOICE_EXISTS_REQUEST.json())
