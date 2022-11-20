@@ -1,6 +1,6 @@
 import os
 
-URL = 'https://backend.mariuszhalada.pl'
+URL = 'https://www.backend.mariuszhalada.pl'
 LOGIN_URL = URL + '/login'
 SEND_EMAIL_URL = URL + '/email'
 SEND_SMS_URL = URL + '/text-message'
