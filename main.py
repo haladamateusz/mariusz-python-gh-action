@@ -65,16 +65,19 @@ class InvoiceGenerator:
         return bool(self.INVOICE_EXISTS_REQUEST.text)
 
     def send_email(self):
-        self.EMAIL_REQUEST = requests.post(env.SEND_EMAIL_URL + f'/{urllib.parse.quote(env.CONTRARIAN)}', {}, headers=self.headers)
+        self.EMAIL_REQUEST = requests.post(env.SEND_EMAIL_URL + f'/{urllib.parse.quote(env.CONTRARIAN)}',
+        { contrarian: env.CONTRARIAN}, headers=self.headers)
 
     def send_sms(self):
         self.SMS_REQUEST = requests.post(env.SEND_SMS_URL, {}, headers=self.headers)
 
     def save_invoice_log(self):
-        self.INVOICE_LOG_REQUEST = requests.post(env.SAVE_INVOICE_LOG_URL + f'/{urllib.parse.quote(env.CONTRARIAN)}', headers=self.headers)
+        self.INVOICE_LOG_REQUEST = requests.post(env.SAVE_INVOICE_LOG_URL + f'/{urllib.parse.quote(env.CONTRARIAN)}',
+         { contrarian: env.CONTRARIAN}, headers=self.headers)
 
     def upload_invoice(self):
-        self.BACKBLAZE_UPLOAD_REQUEST = requests.post(env.BACKBLAZE_UPLOAD_REQUEST, headers=self.headers)
+        self.BACKBLAZE_UPLOAD_REQUEST = requests.post(env.BACKBLAZE_UPLOAD_REQUEST,
+         { contrarian: env.CONTRARIAN}, headers=self.headers)
 
     def current_date(self):
         return datetime.today().strftime('%d.%m.%Y %H:%M:%S ')
