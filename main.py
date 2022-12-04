@@ -6,7 +6,7 @@ import urllib.parse
 class InvoiceGenerator:
     TOKEN_REQUEST = None
     EMAIL_REQUEST = None
-    SMS_REQUEST = None
+    TEXT_MESSAGE_REQUEST = None
     INVOICE_EXISTS_REQUEST = None
     INVOICE_LOG_REQUEST = None
     BACKBLAZE_UPLOAD_REQUEST = None
@@ -36,10 +36,10 @@ class InvoiceGenerator:
             exit(0)
         if self.EMAIL_REQUEST.ok: print('EMAIL OK')
 
-        self.send_sms()
-        if not self.SMS_REQUEST.ok:
-            print(f'{self.current_date()}| ERROR {str(self.SMS_REQUEST.status_code)} sending sms fault ')
-        if self.SMS_REQUEST.ok: print('SMS OK')
+        self.send_text_message()
+        if not self.TEXT_MESSAGE_REQUEST.ok:
+            print(f'{self.current_date()}| ERROR {str(self.TEXT_MESSAGE_REQUEST.status_code)} sending text message fault ')
+        if self.TEXT_MESSAGE_REQUEST.ok: print('TEXT MESSAGE OK')
 
         self.save_invoice_log()
         if not self.INVOICE_LOG_REQUEST.ok:
@@ -65,14 +65,13 @@ class InvoiceGenerator:
         return bool(self.INVOICE_EXISTS_REQUEST.text)
 
     def send_email(self):
-        self.EMAIL_REQUEST = requests.post(env.SEND_EMAIL_URL + f'/{urllib.parse.quote(env.CONTRARIAN)}',
-        json={ "contrarian": env.CONTRARIAN}, headers=self.headers)
+        self.EMAIL_REQUEST = requests.post(env.SEND_EMAIL_URL, json={ "contrarian": env.CONTRARIAN}, headers=self.headers)
 
-    def send_sms(self):
-        self.SMS_REQUEST = requests.post(env.SEND_SMS_URL, {}, headers=self.headers)
+    def send_text_message(self):
+        self.TEXT_MESSAGE_REQUEST = requests.post(env.SEND_TEXT_MESSAGE_URL, {}, headers=self.headers)
 
     def save_invoice_log(self):
-        self.INVOICE_LOG_REQUEST = requests.post(env.SAVE_INVOICE_LOG_URL + f'/{urllib.parse.quote(env.CONTRARIAN)}',
+        self.INVOICE_LOG_REQUEST = requests.post(env.SAVE_INVOICE_LOG_URL,
          json={ "contrarian": env.CONTRARIAN}, headers=self.headers)
 
     def upload_invoice(self):
